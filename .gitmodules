@@ -1,0 +1,3 @@
+[submodule "bilara-data"]
+	path = bilara-data
+	url = https://github.com/jsfuentes/bilara-data.git

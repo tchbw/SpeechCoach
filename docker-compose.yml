@@ -1,0 +1,40 @@
+version: "3.9"
+name: clayboard-dev-services
+services:
+  db:
+    image: pgvector/pgvector:pg15
+    restart: always
+    container_name: clayboard-dev-db
+    environment:
+      POSTGRES_USER: neondb_owner
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./db-init:/docker-entrypoint-initdb.d/
+  shadow_db:
+    image: pgvector/pgvector:pg15
+    restart: always
+    container_name: clayboard-dev-shadow-db
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: neondb_owner
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: shadow
+
+  temporal-server:
+    build:
+      dockerfile_inline: |
+        FROM debian
+        SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+        RUN apt-get -y update; apt-get -y install curl
+        RUN curl -sSf https://temporal.download/cli.sh | sh
+        ENV PATH="$PATH:/root/.temporalio/bin"
+        EXPOSE 7233
+        EXPOSE 8233
+    image: temporal-server
+    ports:
+      - "7233:7233"
+      - "8233:8233"
+    command: ["temporal", "server", "start-dev", "--ip", "0.0.0.0"]
