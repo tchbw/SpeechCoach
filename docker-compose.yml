@@ -2,7 +2,7 @@ version: "3.9"
 name: clayboard-dev-services
 services:
   db:
-    image: pgvector/pgvector:pg15
+    image: postgres:15
     restart: always
     container_name: clayboard-dev-db
     environment:

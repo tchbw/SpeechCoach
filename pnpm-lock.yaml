@@ -207,8 +207,8 @@ dependencies:
     specifier: ^9.4.0
     version: 9.4.0
   postmark:
-    specifier: ^4.0.2
-    version: 4.0.2
+    specifier: ^4.0.5
+    version: 4.0.5
   prisma-field-encryption:
     specifier: ^1.5.2
     version: 1.5.2(@prisma/client@5.13.0)
@@ -10156,6 +10156,19 @@ packages:
       - debug
     dev: false
 
+  /axios@1.7.7:
+    resolution:
+      {
+        integrity: sha512-S4kL7XrjgBmvdGut0sN3yJxqYzrDOnivkBiN0OFs6hLiUam3UPvswUo0kqGyhqUZGEOytHyumEdXsAkgCOUf3Q==,
+      }
+    dependencies:
+      follow-redirects: 1.15.6
+      form-data: 4.0.0
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
   /axobject-query@3.2.1:
     resolution:
       {
@@ -18476,13 +18489,13 @@ packages:
         integrity: sha512-i/hbxIE9803Alj/6ytL7UHQxRvZkI9O4Sy+J3HGc4F4oo/2eQAjTSNJ0bfxyse3bH0nuVesCk+3IRLaMtG3H6w==,
       }
 
-  /postmark@4.0.2:
+  /postmark@4.0.5:
     resolution:
       {
-        integrity: sha512-2zlCv+KVVQ0KoamXZHE7d+gXzLlr8tPE+PxQmtUaIZhbHzZAq4D6yH2b+ykhA8wYCc5ISodcx8U1aNLenXBs9g==,
+        integrity: sha512-nerZdd3TwOH4CgGboZnlUM/q7oZk0EqpZgJL+Y3Nup8kHeaukxouQ6JcFF3EJEijc4QbuNv1TefGhboAKtf/SQ==,
       }
     dependencies:
-      axios: 1.7.2
+      axios: 1.7.7
     transitivePeerDependencies:
       - debug
     dev: false

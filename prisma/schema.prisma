@@ -2,15 +2,12 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["postgresqlExtensions"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider   = "postgresql"
-  url        = env("DATABASE_URL")
-  // https://github.com/pgvector/pgvector-node?tab=readme-ov-file#prisma
-  extensions = [vector]
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Session {
@@ -253,21 +250,4 @@ model ChatMessageThread {
   documentId String
 
   @@index([documentId])
-}
-
-model VectorizedItem {
-  /// prisma-lint-ignore-model require-field
-  /// prisma-lint-ignore-model require-field-type
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  collection  String? // Quran, Torah, Pali Canon, Bible, etc
-  book        String? // surah, chapter, etc
-  verse       String? // ayah, verse, etc
-  translation String? // King James Version, etc
-
-  content       String                       @db.Text
-  embedding     Unsupported("vector(3072)")?
-  embedding_512 Unsupported("vector(512)")?
 }
