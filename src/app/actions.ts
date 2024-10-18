@@ -1,43 +1,50 @@
 "use server";
 
-import { openai } from "@ai-sdk/openai";
-import { streamObject } from "ai";
-import { createStreamableValue } from "ai/rsc";
+import { z } from "zod";
 
-import type {
-  PartialReligionQA,
-  ReligionQA,
-  ReligionQAForm,
-} from "@/app/types";
-import { religionQASchema } from "@/app/types";
+import { logger } from "@/init/logger";
+import { AIUtil } from "@/server/util/ai";
+import { SpeechAnalyzer } from "@/utils/speechAnalyzer";
+import { SpeechComparer } from "@/utils/speechComparer";
 
-// eslint-disable-next-line @typescript-eslint/require-await
-export async function generate({ question }: ReligionQAForm) {
-  "use server";
+export async function generateWithAudio(formData: FormData) {
+  logger.info({ formData }, `Received form data:`);
+  const formSchema = z.object({
+    question: z.string(),
+    audio: z.instanceof(File),
+    audioDuration: z.string().transform((value) => parseFloat(value)),
+  });
 
-  const stream = createStreamableValue<PartialReligionQA, ReligionQA>();
+  const parsedFormData = formSchema.parse({
+    question: formData.get(`question`),
+    audio: formData.get(`audio`),
+    audioDuration: formData.get(`audioDuration`),
+  });
 
-  void (async () => {
-    const { partialObjectStream } = await streamObject<ReligionQA>({
-      model: openai(`gpt-4o-mini`),
-      system:
-        `You are an assistant that roleplays as spiritual figures of various religions. ` +
-        `The user is asking a question and wants to know how it pertains to different religions. ` +
-        `Given the user's question, provide a response from the perspective of Christianity, Islam, and Buddhism. ` +
-        `Do not include responses for any other religions besides these 3. ` +
-        `Cite sources from religious texts like the Bible, Qur'an, etc. `,
-      prompt: `Please answer the following question: "${question}"`,
-      schema: religionQASchema,
-      // onFinish({ object }) {
-      // },
-    });
+  const { question, audio: audioFile, audioDuration } = parsedFormData;
 
-    for await (const partialObject of partialObjectStream) {
-      stream.update(partialObject);
-    }
+  if (!question || !audioFile) {
+    throw new Error(`Missing required fields`);
+  }
 
-    stream.done();
-  })();
+  logger.info(`Received question: ${question}`);
+  logger.info(`Received audio file: ${audioFile.name}`);
 
-  return { object: stream.value };
+  const transcription = await AIUtil.transcribeAudio(audioFile);
+
+  const analysisResults = {
+    speakingPace: SpeechAnalyzer.speakingPace(transcription, audioDuration),
+    gradeLevel: SpeechAnalyzer.gradeLevel(transcription),
+    topWords: SpeechAnalyzer.topNWords(transcription, 10),
+    fillerWords: SpeechAnalyzer.fillerWordCount(transcription),
+    structure: await SpeechAnalyzer.structure(question, transcription),
+    reference: await SpeechComparer.getReferenceComparison({
+      name: `J.D. Vance`,
+      question,
+      userResponse: transcription,
+    }),
+  };
+
+  logger.info(analysisResults, `Analysis results:`);
+  return analysisResults;
 }

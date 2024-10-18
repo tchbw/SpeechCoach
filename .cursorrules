@@ -20,6 +20,8 @@ Library Conventions
 - Use lodash utilities only when helpful. Always import them as submodules `lodash/<util>`.
 - Follow Next.js docs for Data Fetching, Rendering, and Routing.
 - Use function syntax for all react components.
+- For forms, use react-hook-form with zod as the resolver. Use Shadcn Forms for the form UI.
+- For exhausting branches, prefer to use `switch` statements over `if/else` statements. Use the util `assertUnreachable` for the default case instead of using `throw Error`.
 
 TypeScript Usage
 

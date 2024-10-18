@@ -48,3 +48,18 @@ export type ReligionQA = z.infer<typeof religionQASchema>;
 
 export type ReligionQAResponse = z.infer<typeof religionQAResponseSchema>;
 export type PartialReligionQAResponse = DeepPartial<ReligionQAResponse>;
+
+export type SpeechAnalysis = {
+  speakingPace: number;
+  gradeLevel: number;
+  topWords: Record<string, number>;
+  fillerWords: Record<string, number>;
+  structure: string[];
+  reference: {
+    impersonatedResponse: string;
+    impersonatedResponseStructure: string[];
+    feedbackToMatchReference: string;
+    referenceSpeakingPace: number;
+    referenceGradeLevel: number;
+  };
+};
