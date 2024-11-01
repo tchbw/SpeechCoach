@@ -1,4 +1,11 @@
-# Running the app
+# AI speaking coach
+
+A concept using AI as a speaking coach. Record your answer to a query, and get back an analysis comparing yourself to another speaker.
+
+> [!NOTE]  
+> This concept POC uses Senator Vance as the reference speaker. I picked him randomly because I just saw an interview from him. No political opinions involved in that 
+
+## Running the app
 
 Install pnpm and have Docker running.
 
