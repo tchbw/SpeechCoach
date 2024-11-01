@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -11,8 +11,13 @@ import { z } from "zod";
 import Analysis from "@/app/Analysis";
 import type { SpeechAnalysis } from "@/app/types";
 import { Button } from "@/client/components/ui/button";
-import { FormItem, FormMessage } from "@/client/components/ui/form";
-import { Form, FormControl, FormField } from "@/client/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/client/components/ui/form";
 import { useEnterSubmit } from "@/client/hooks/use-enter-submit";
 import dayjs from "@/init/dayjs";
 import { logger } from "@/init/logger";
@@ -120,6 +125,9 @@ export default function Home() {
     return <Analysis analysisResults={analysisResults} />;
   }
 
+  const hasRecording = audioChunks.length > 0;
+  const hasQuestion = form.watch(`question`)?.length > 0;
+
   return (
     <Form {...form}>
       <form
@@ -138,7 +146,7 @@ export default function Home() {
                     {...field}
                     tabIndex={0}
                     onKeyDown={onKeyDown}
-                    placeholder="Enter your question"
+                    placeholder="What question are you answering?"
                     className="min-h-[60px] w-full resize-none bg-transparent px-2 py-[1.3rem] focus-within:outline-none sm:text-sm"
                     autoFocus
                     spellCheck={false}
@@ -149,43 +157,49 @@ export default function Home() {
                   />
                 </FormControl>
                 <FormMessage />
-
-                <div className="pr-2 pt-[3px]">
-                  <Button
-                    type="button"
-                    size="icon"
-                    onClick={isRecording ? stopRecording : startRecording}
-                    className="mb-4"
-                  >
-                    {isRecording ? (
-                      <Loader2 className="animate-spin" />
-                    ) : (
-                      <ArrowRight />
-                    )}
-                    <span className="sr-only">
-                      {isRecording ? `Stop Recording` : `Start Recording`}
-                    </span>
-                  </Button>
-                </div>
               </FormItem>
             )}
           />
         </div>
-        {isRecording && (
-          <div
-            className={`h-16 w-16 rounded-full bg-red-500 ${isRecording ? `animate-pulse` : ``}`}
-          />
-        )}
-        <Button
-          type="submit"
-          disabled={isRecording || form.formState.isSubmitting}
-        >
-          {form.formState.isSubmitting ? (
-            <Loader2 className="animate-spin" />
-          ) : (
-            `Submit`
-          )}
-        </Button>
+        <div className="flex gap-4">
+          <Button
+            type="button"
+            onClick={isRecording ? stopRecording : startRecording}
+            className={`${isRecording ? `bg-rose-600 text-gray-100 hover:bg-rose-700` : ``}`}
+          >
+            {isRecording ? (
+              <Loader2 className="mr-2 animate-spin" />
+            ) : (
+              <svg
+                className="mr-2 h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="6" />
+              </svg>
+            )}
+            {isRecording ? `Stop Recording` : `Record Answer`}
+          </Button>
+          <Button
+            type="submit"
+            disabled={
+              isRecording ||
+              form.formState.isSubmitting ||
+              !hasRecording ||
+              !hasQuestion
+            }
+          >
+            {form.formState.isSubmitting ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              `Submit`
+            )}
+          </Button>
+        </div>
       </form>
     </Form>
   );
