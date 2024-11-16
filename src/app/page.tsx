@@ -58,6 +58,7 @@ export default function Home() {
       // Clear any existing recorded audio chunks
       setAudioChunks([]);
 
+      logger.info(`Starting recording...`);
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       setAudioStream(stream);
 
@@ -65,6 +66,8 @@ export default function Home() {
       setMediaRecorder(recorder);
 
       recorder.ondataavailable = (event) => {
+        logger.info(`chunks...`);
+
         if (event.data.size > 0) {
           setAudioChunks((chunks) => [...chunks, event.data]);
         }
@@ -88,6 +91,8 @@ export default function Home() {
         audioStream.getTracks().forEach((track) => track.stop());
       }
     }
+
+    logger.info(`audioChunks:`, audioChunks);
   };
 
   const onSubmit = async (data: AudioForm) => {

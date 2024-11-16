@@ -28,12 +28,9 @@ export default function Analysis({
     <div className="chart-wrapper mx-auto flex max-w-6xl flex-col flex-wrap items-start justify-center gap-6 p-6 sm:flex-row sm:p-8">
       <div className="grid w-full gap-6 sm:grid-cols-2 lg:max-w-[22rem] lg:grid-cols-1 xl:max-w-[25rem]">
         <TopWordsCard topWords={analysisResults.topWords} />
-        {` `}
-      </div>
-      <div className="grid w-full flex-1 gap-6 lg:max-w-[20rem]">
         <GradeLevelCard analysisResults={analysisResults} />
         <SpeakingPaceCard analysisResults={analysisResults} />
-        <Card className="max-w-xs" x-chunk="charts-01-chunk-4">
+        <Card x-chunk="charts-01-chunk-4">
           <CardHeader>
             <CardTitle>Filler words</CardTitle>
           </CardHeader>
@@ -174,12 +171,12 @@ function GradeLevelCard({
   analysisResults: SpeechAnalysis;
 }) {
   return (
-    <Card className="max-w-xs" x-chunk="charts-01-chunk-2">
+    <Card x-chunk="charts-01-chunk-2">
       <CardHeader>
         <CardTitle>Grade level</CardTitle>
         <CardDescription>
           This is the grade level of your speaking compared to the reference
-          speaker.
+          speaker (J.D. Vance).
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
@@ -280,11 +277,11 @@ function SpeakingPaceCard({
   analysisResults: SpeechAnalysis;
 }) {
   return (
-    <Card className="max-w-xs" x-chunk="charts-01-chunk-3">
+    <Card x-chunk="charts-01-chunk-3">
       <CardHeader className="p-4 pb-0">
         <CardTitle>Speaking pace</CardTitle>
         <CardDescription>
-          Reference speaks at approximately{` `}
+          Reference (J.D. Vance) speaks at approximately{` `}
           {analysisResults.reference.referenceSpeakingPace} words per minute.
         </CardDescription>
       </CardHeader>
@@ -306,42 +303,58 @@ function ResponseStructureComparisonCard({
   analysisResults: SpeechAnalysis;
 }) {
   return (
-    <Card className="max-w-md" x-chunk="charts-01-chunk-5">
-      <CardHeader>
-        <CardTitle>Response Structure Comparison</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr>
-                <th className="p-2 text-left">Your Response</th>
-                <th className="p-2 text-left">Reference Response</th>
-              </tr>
-            </thead>
-            <tbody>
-              {analysisResults.structure.map((item, index) => (
-                <tr key={index}>
-                  <td className="p-2">{item}</td>
-                  <td className="p-2">
-                    {analysisResults.reference.impersonatedResponseStructure[
-                      index
-                    ] || ``}
-                  </td>
+    <>
+      <Card x-chunk="charts-01-chunk-5">
+        <CardHeader>
+          <CardTitle>Response Structure Comparison</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr>
+                  <th className="p-2 text-left">Your Response</th>
+                  <th className="p-2 text-left">
+                    J.D. Vance Reference Response
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <CardTitle>Reference response</CardTitle>
-        <CardDescription>
-          {analysisResults.reference.impersonatedResponse}
-        </CardDescription>
-        <CardTitle>Advice</CardTitle>
-        <CardDescription>
-          {analysisResults.reference.feedbackToMatchReference}
-        </CardDescription>
-      </CardContent>
-    </Card>
+              </thead>
+              <tbody>
+                {analysisResults.structure.map((item, index) => (
+                  <tr key={index}>
+                    <td className="p-2">{item}</td>
+                    <td className="p-2">
+                      {analysisResults.reference.impersonatedResponseStructure[
+                        index
+                      ] || ``}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>J.D. Vance example Response</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <CardDescription>
+            {analysisResults.reference.impersonatedResponse}
+          </CardDescription>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Actionable advice</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <CardDescription>
+            {analysisResults.reference.feedbackToMatchReference}
+          </CardDescription>
+        </CardContent>
+      </Card>
+    </>
   );
 }
